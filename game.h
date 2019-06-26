@@ -33,12 +33,14 @@ struct ms_game {
   uint8_t   cursor_col;
 };
 
-void init_game(struct ms_game *game);
+void check_cell(struct ms_game *game);
 
-void setup_game(struct ms_game *game, int difficulty);
+void delete_game(struct ms_game *game);
 
 void generate_map(struct ms_game *game);
 
-void delete_game(struct ms_game *game);
+void init_game(struct ms_game *game);
+
+void setup_game(struct ms_game *game, int difficulty);
 #endif
 

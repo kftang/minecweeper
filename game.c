@@ -4,8 +4,55 @@
 #include <time.h>
 #include "game.h"
 
-int _rand_num(int max) {
-  return rand() % max;
+int _count_adj_mines(struct ms_game *game, int row, int col) {
+  int max_rows = game->rows;
+  int max_cols = game->cols;
+
+  // Get bounds for row and col
+  int row_min = row == 0 ? 0 : -1;
+  int col_min = col == 0 ? 0 : -1;
+  int row_max = row == max_rows - 1 ? 0 : 1;
+  int col_max = col == max_cols - 1 ? 0 : 1;
+
+  // Check adj cells for mines
+  int adj_mines = 0;
+  for (int i = row_min; i <= row_max; i++) {
+    for (int j = col_min; j <= col_max; j++) {
+      if ((game->map[row + i][col + j] & NUM_MASK) == MINE) {
+        adj_mines++;
+      }
+    }
+  }
+  return adj_mines;
+}
+
+void _discover_around(struct ms_game *game, int row, int col) {
+  ms_cell_t **map = game->map;
+  ms_cell_t cell = map[row][col];
+  
+  // Set cell to be visible
+  map[row][col] &= ~HIDDEN;
+  map[row][col] |= SHOWN;
+  
+  // Check if we need to discover adj cells
+  if ((cell & NUM_MASK) == 0 && (cell & HIDDEN)) {
+    
+    int max_rows = game->rows;
+    int max_cols = game->cols;
+
+    // Get bounds for row and col
+    int row_min = row == 0 ? 0 : -1;
+    int col_min = col == 0 ? 0 : -1;
+    int row_max = row == max_rows - 1 ? 0 : 1;
+    int col_max = col == max_cols - 1 ? 0 : 1;
+
+    // Discover adj cells 
+    for (int i = row_min; i <= row_max; i++) {
+      for (int j = col_min; j <= col_max; j++) {
+        _discover_around(game, row + i, col + j);
+      }
+    }
+  }
 }
 
 void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
@@ -28,26 +75,24 @@ void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
   }
 }
 
-int _count_adj_mines(struct ms_game *game, int row, int col) {
-  int max_rows = game->rows;
-  int max_cols = game->cols;
+int _rand_num(int max) {
+  return rand() % max;
+}
 
-  // Get bounds for row and col
-  int row_min = row == 0 ? 0 : -1;
-  int col_min = col == 0 ? 0 : -1;
-  int row_max = row == max_rows - 1 ? 0 : 1;
-  int col_max = col == max_cols - 1 ? 0 : 1;
-
-  // Check adj cells for mines
-  int adj_mines = 0;
-  for (int i = row_min; i <= row_max; i++) {
-    for (int j = col_min; j <= col_max; j++) {
-      if ((game->map[row + i][col + j] & NUM_MASK) == MINE) {
-        adj_mines++;
-      }
+void check_cell(struct ms_game *game) {
+  int row = game->cursor_row;
+  int col = game->cursor_col;
+  ms_cell_t cell = game->map[row][col];
+  if (cell & HIDDEN) {
+    if ((cell & NUM_MASK) == MINE) {
+      // Lose condition
+    } else if ((cell & NUM_MASK) == 0) {
+      _discover_around(game, row, col);
+    } else {
+      game->map[row][col] &= ~HIDDEN;
+      game->map[row][col] |= SHOWN;
     }
   }
-  return adj_mines;
 }
 
 void init_game(struct ms_game *game) {

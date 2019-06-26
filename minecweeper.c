@@ -50,6 +50,7 @@ int main() {
       case ' ':
         if (!game.map_generated)
           generate_map(&game);
+        check_cell(&game);
     }
     gfx_draw_game(&game);
     refresh();
