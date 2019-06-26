@@ -1,10 +1,11 @@
 #include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <time.h>
 #include "game.h"
 
 int _rand_num(int max) {
-  return (int) round(rand() * max);
+  return rand() % max;
 }
 
 void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
@@ -34,8 +35,8 @@ int _count_adj_mines(struct ms_game *game, int row, int col) {
   // Get bounds for row and col
   int row_min = row == 0 ? 0 : -1;
   int col_min = col == 0 ? 0 : -1;
-  int row_max = row == max_rows - 1 ? max_rows - 1 : 1;
-  int col_max = col == max_cols - 1 ? max_cols - 1 : 1;
+  int row_max = row == max_rows - 1 ? 0 : 1;
+  int col_max = col == max_cols - 1 ? 0 : 1;
 
   // Check adj cells for mines
   int adj_mines = 0;
@@ -57,6 +58,7 @@ void init_game(struct ms_game *game) {
   game->mines = 0;
   game->cursor_row = 0;
   game->cursor_col = 0;
+  srand(time(0));
 }
 
 void generate_map(struct ms_game *game) {
@@ -87,14 +89,12 @@ void generate_map(struct ms_game *game) {
   // Generate numbers for all cells now
   for (int i = 0; i < max_rows; i++) {
     for (int j = 0; j < max_cols; j++) {
-      map[i][j] &= ~HIDDEN;
-      map[i][j] |= SHOWN;
       // Skip mines
       if ((map[i][j] & NUM_MASK) == MINE)
         continue;
 
       // Get number of adj mines and set it to the cell
-      int adj_mines = _count_adj_mines(game, row, col);
+      int adj_mines = _count_adj_mines(game, i, j);
       map[i][j] |= (uint16_t) adj_mines;
     }
   }

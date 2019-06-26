@@ -12,3 +12,6 @@ game.o: game.c
 
 graphics.o: graphics.c
 	$(CC) -c -o graphics.o graphics.c $(CFLAGS)
+
+clean:
+	rm *.o minecweeper

@@ -19,7 +19,7 @@
 #define ZERO    0x0000
 #define MINE    0x000F
 
-#define NUM_MASK 0x0001
+#define NUM_MASK 0x000F
 
 typedef uint16_t ms_cell_t;
 
