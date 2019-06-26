@@ -25,10 +25,13 @@ int main() {
     deinit_input();
     return -1;
   }
+
+  /* Setup the game */
   setup_game(&game, selection);
   gfx_draw_game(&game);
   refresh();
 
+  /* Main game loop */
   while (true) {
     int key = getch();
     switch (key) {
@@ -43,6 +46,10 @@ int main() {
         break;
       case KEY_RIGHT:
         game.cursor_col = game.cursor_col == game.cols - 1 ? game.cols - 1 : game.cursor_col + 1;
+        break;
+      case ' ':
+        if (!game.map_generated)
+          generate_map(&game);
     }
     gfx_draw_game(&game);
     refresh();

@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include "game.h"
 
@@ -26,8 +27,31 @@ void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
   }
 }
 
+int _count_adj_mines(struct ms_game *game, int row, int col) {
+  int max_rows = game->rows;
+  int max_cols = game->cols;
+
+  // Get bounds for row and col
+  int row_min = row == 0 ? 0 : -1;
+  int col_min = col == 0 ? 0 : -1;
+  int row_max = row == max_rows - 1 ? max_rows - 1 : 1;
+  int col_max = col == max_cols - 1 ? max_cols - 1 : 1;
+
+  // Check adj cells for mines
+  int adj_mines = 0;
+  for (int i = row_min; i <= row_max; i++) {
+    for (int j = col_min; j <= col_max; j++) {
+      if ((game->map[row + i][col + j] & NUM_MASK) == MINE) {
+        adj_mines++;
+      }
+    }
+  }
+  return adj_mines;
+}
+
 void init_game(struct ms_game *game) {
   game->map = NULL;
+  game->map_generated = false;
   game->rows = 0;
   game->cols = 0;
   game->mines = 0;
@@ -35,8 +59,48 @@ void init_game(struct ms_game *game) {
   game->cursor_col = 0;
 }
 
-void generate_map(struct ms_game *game, int row, int col) {
+void generate_map(struct ms_game *game) {
+  int row = game->cursor_row;
+  int col = game->cursor_col;
+  int max_rows = game->rows;
+  int max_cols = game->cols;
+  int mines_left = game->mines;
+  ms_cell_t **map = game->map;
 
+  // Place mines around the field
+  while (mines_left > 0) {
+    int rand_row = _rand_num(max_rows);
+    int rand_col = _rand_num(max_cols);
+    // Make sure the random cell is not in a 1 radius around the starting cell
+    if (abs(rand_row - row) < 2 && abs(rand_col - col) < 2) {
+      continue;
+    // Make sure the random cell is not already a mine
+    } else if ((map[rand_row][rand_col] & NUM_MASK) == MINE) {
+      continue;
+    // Set the cell as a mine
+    } else {
+      map[rand_row][rand_col] |= MINE;
+      mines_left--;
+    }
+  }
+  
+  // Generate numbers for all cells now
+  for (int i = 0; i < max_rows; i++) {
+    for (int j = 0; j < max_cols; j++) {
+      map[i][j] &= ~HIDDEN;
+      map[i][j] |= SHOWN;
+      // Skip mines
+      if ((map[i][j] & NUM_MASK) == MINE)
+        continue;
+
+      // Get number of adj mines and set it to the cell
+      int adj_mines = _count_adj_mines(game, row, col);
+      map[i][j] |= (uint16_t) adj_mines;
+    }
+  }
+
+  // Set map as generated
+  game->map_generated = true;
 }
 
 void setup_game(struct ms_game *game, int difficulty) {

@@ -1,6 +1,7 @@
 #ifndef GAME__H
 #define GAME__H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /* Cell Types */
@@ -16,7 +17,7 @@
 #define SEVEN   0x0007
 #define EIGHT   0x0008
 #define ZERO    0x0000
-#define BOMB    0x000F
+#define MINE    0x000F
 
 #define NUM_MASK 0x0001
 
@@ -24,6 +25,7 @@ typedef uint16_t ms_cell_t;
 
 struct ms_game {
   ms_cell_t **map;
+  bool      map_generated;
   uint8_t   rows;
   uint8_t   cols;
   uint8_t   mines;
@@ -34,6 +36,8 @@ struct ms_game {
 void init_game(struct ms_game *game);
 
 void setup_game(struct ms_game *game, int difficulty);
+
+void generate_map(struct ms_game *game);
 
 void delete_game(struct ms_game *game);
 #endif
