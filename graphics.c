@@ -3,16 +3,21 @@
 #include "game.h"
 
 void gfx_draw_game(struct ms_game *game) {
-  printw("Game info\ncols: %d\nrows: %d\ncells left: %d\n", game->cols, game->rows, game->cells_left);
+  int rows = game->rows;
+  int cols = game->cols;
+  int cells_left = game->cells_left;
+  // Only display game info if game is not over
+  if (game->cells_left > 0)
+    printw("Game info\ncols: %d\nrows: %d\ncells left: %d\n", cols, rows, cells_left);
   // Display top border
   for (int i = 0; i < 3 * game->cols + 2; i++)
     printw("-");
   printw("\n");
 
   // Display cells and side border
-  for (int i = 0; i < game->rows; i++) {
+  for (int i = 0; i < rows; i++) {
     printw("|");
-    for (int j = 0; j < game->cols; j++) {
+    for (int j = 0; j < cols; j++) {
       // If the player has the current cell selected show an x
       if (i == game->cursor_row && j == game->cursor_col) {
         printw("[x]");
@@ -32,7 +37,8 @@ void gfx_draw_game(struct ms_game *game) {
   }
 
   // Display bottom border
-  for (int i = 0; i < 3 * game->cols + 2; i++)
+  for (int i = 0; i < 3 * cols + 2; i++)
     printw("-");
+  printw("\n");
 }
 

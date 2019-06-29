@@ -26,8 +26,9 @@ int main() {
     return -1;
   }
 
-  /* Setup the game */
+  /* Setup the game and then draw it on the screen */
   setup_game(&game, selection);
+  clear();
   gfx_draw_game(&game);
   refresh();
 
@@ -48,24 +49,23 @@ int main() {
         game.cursor_col = game.cursor_col == game.cols - 1 ? game.cols - 1 : game.cursor_col + 1;
         break;
       case ' ':
+        // If the map has not been generated, generate it
         if (!game.map_generated)
           generate_map(&game);
         check_cell(&game);
         break;
       case 'f':
       case 'F':
+        // Flag or unflag cell at current cursor pos
         flag_cell(&game);
     }
-    if (game.cells_left == 0) {
-      clear(); 
+
+    clear(); 
+    // If game is over, display win message
+    if (game.cells_left == 0)
       printw("You won!\n");
-      gfx_draw_game(&game);
-      refresh();
-    } else {
-      clear();
-      gfx_draw_game(&game);
-      refresh();
-    }
+    gfx_draw_game(&game);
+    refresh();
   }
 
   deinit_input();
