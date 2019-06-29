@@ -6,8 +6,9 @@
 
 /* Cell Types */
 #define HIDDEN  0x1000
-#define SHOWN   0x0100
-#define FLAG    0x0010
+#define SHOWN   0x2000
+#define FLAG    0x4000
+#define VISITED 0x8000
 #define ONE     0x0001
 #define TWO     0x0002
 #define THREE   0x0003

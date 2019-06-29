@@ -34,8 +34,12 @@ void _discover_around(struct ms_game *game, int row, int col) {
   map[row][col] &= ~HIDDEN;
   map[row][col] |= SHOWN;
 
-  // Decrement cells left
-  game->cells_left--;
+  if (!visited[row * game->rows + col]) {
+    visited[row * game->rows + col] = true;
+
+    // Decrement cells left
+    game->cells_left--;
+  }
   
   // Check if we need to discover adj cells
   if ((cell & NUM_MASK) == 0 && (cell & HIDDEN)) {
@@ -86,6 +90,8 @@ int _rand_num(int max) {
 }
 
 void check_cell(struct ms_game *game) {
+  int max_rows = game->rows;
+  int max_cols = game->cols;
   int row = game->cursor_row;
   int col = game->cursor_col;
   ms_cell_t cell = game->map[row][col];
@@ -119,7 +125,7 @@ void flag_cell(struct ms_game *game) {
   
   // Only allow flag if the cell is still hidden
   if (cell & HIDDEN) {
-    game->map[row][col] |= FLAG;
+    game->map[row][col] ^= FLAG;
   }
 }
 

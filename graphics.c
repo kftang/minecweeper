@@ -4,7 +4,7 @@
 
 void gfx_draw_game(struct ms_game *game) {
   clear();
-  printw("Game info\ncols: %d\nrows: %d\ngenned: %d\n", game->cols, game->rows, game->map_generated);
+  printw("Game info\ncols: %d\nrows: %d\ncells left: %d\n", game->cols, game->rows, game->cells_left);
   // Display top border
   for (int i = 0; i < 3 * game->cols + 2; i++)
     printw("-");
