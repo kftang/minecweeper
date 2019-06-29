@@ -34,8 +34,8 @@ void _discover_around(struct ms_game *game, int row, int col) {
   map[row][col] &= ~HIDDEN;
   map[row][col] |= SHOWN;
 
-  if (!visited[row * game->rows + col]) {
-    visited[row * game->rows + col] = true;
+  if (!(cell & VISITED)) {
+    map[row][col] |= VISITED;
 
     // Decrement cells left
     game->cells_left--;
@@ -106,7 +106,7 @@ void check_cell(struct ms_game *game) {
     // Show single cell
     } else {
       game->map[row][col] &= ~HIDDEN;
-      game->map[row][col] |= SHOWN;
+      game->map[row][col] |= (SHOWN | VISITED);
       game->cells_left--;
     }
   }

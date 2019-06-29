@@ -67,6 +67,7 @@ int main() {
   }
 
   deinit_input();
+  delete_game(&game);
   return 0;
 }
 
