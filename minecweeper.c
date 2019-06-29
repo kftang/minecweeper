@@ -20,7 +20,7 @@ int main() {
   } while (selection > '4' || selection < '1');
 
   /* Parse selection */
-  selection -= '1';
+  selection -= '0';
   if (selection == 4) {
     deinit_input();
     return -1;

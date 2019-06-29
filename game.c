@@ -68,9 +68,9 @@ void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
   game->cells_left = rows * cols - mines;
 
   /* Allocate map */
-  game->map = malloc(sizeof(ms_cell_t *) * rows);
+  game->map = calloc(rows, sizeof(ms_cell_t *));
   for (int i = 0; i < rows; i++)
-    game->map[i] = malloc(sizeof(ms_cell_t) * cols);
+    game->map[i] = calloc(cols, sizeof(ms_cell_t));
 
   /* Populate map with only hidden*/
   int mines_left = mines;
