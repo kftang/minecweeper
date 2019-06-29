@@ -20,11 +20,11 @@ void gfx_draw_game(struct ms_game *game) {
       // Otherwise show whatever the cell contains
       } else {
         ms_cell_t cell = game->map[i][j];
-        if (cell & FLAG) {
+        if (CELL_IS_FLAGGED(cell)) {
           printw("[F]");
-        } else if (cell & SHOWN) {
-          printw("[%d]", cell & NUM_MASK);
-        } else if (cell & HIDDEN) {
+        } else if (CELL_IS_SHOWN(cell)) {
+          printw("[%d]", CELL_NUMBER(cell));
+        } else if (CELL_IS_HIDDEN(cell)) {
           printw("[ ]");
         }
       }

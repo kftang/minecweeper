@@ -22,6 +22,14 @@
 
 #define NUM_MASK 0x000F
 
+#define CELL_NUMBER(CELL) (CELL & NUM_MASK)
+#define CELL_IS_HIDDEN(CELL) (CELL & HIDDEN)
+#define CELL_IS_SHOWN(CELL) (CELL & SHOWN)
+#define CELL_IS_FLAGGED(CELL) (CELL & FLAG)
+#define CELL_IS_VISITED(CELL) (CELL & VISITED)
+#define CELL_IS_MINE(CELL) ((CELL & NUM_MASK) == MINE)
+#define CELL_IS_ZERO(CELL) ((CELL & NUM_MASK) == ZERO)
+
 typedef uint16_t ms_cell_t;
 
 struct ms_game {

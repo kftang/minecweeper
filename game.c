@@ -18,7 +18,7 @@ int _count_adj_mines(struct ms_game *game, int row, int col) {
   int adj_mines = 0;
   for (int i = row_min; i <= row_max; i++) {
     for (int j = col_min; j <= col_max; j++) {
-      if ((game->map[row + i][col + j] & NUM_MASK) == MINE) {
+      if (CELL_IS_MINE(game->map[row + i][col + j])) {
         adj_mines++;
       }
     }
@@ -34,7 +34,7 @@ void _discover_around(struct ms_game *game, int row, int col) {
   map[row][col] &= ~HIDDEN;
   map[row][col] |= SHOWN;
 
-  if (!(cell & VISITED)) {
+  if (!CELL_IS_VISITED(cell)) {
     map[row][col] |= VISITED;
 
     // Decrement cells left
@@ -42,7 +42,7 @@ void _discover_around(struct ms_game *game, int row, int col) {
   }
   
   // Check if we need to discover adj cells
-  if ((cell & NUM_MASK) == 0 && (cell & HIDDEN)) {
+  if (CELL_IS_ZERO(cell) && CELL_IS_HIDDEN(cell)) {
     
     int max_rows = game->rows;
     int max_cols = game->cols;
@@ -97,11 +97,11 @@ void check_cell(struct ms_game *game) {
   ms_cell_t cell = game->map[row][col];
 
   // Only do something if the cell is hidden and not flagged
-  if ((cell & HIDDEN) && !(cell & FLAG)) {
+  if (CELL_IS_HIDDEN(cell) && !CELL_IS_FLAGGED(cell)) {
     // Lose condition
-    if ((cell & NUM_MASK) == MINE) {
+    if (CELL_IS_MINE(cell)) {
     // Discover cells 
-    } else if ((cell & NUM_MASK) == 0) {
+    } else if (CELL_IS_ZERO(cell)) {
       _discover_around(game, row, col);
     // Show single cell
     } else {
@@ -124,7 +124,7 @@ void flag_cell(struct ms_game *game) {
   ms_cell_t cell = game->map[row][col];
   
   // Only allow flag if the cell is still hidden
-  if (cell & HIDDEN) {
+  if (CELL_IS_HIDDEN(cell)) {
     game->map[row][col] ^= FLAG;
   }
 }
@@ -145,7 +145,7 @@ void generate_map(struct ms_game *game) {
     if (abs(rand_row - row) < 2 && abs(rand_col - col) < 2) {
       continue;
     // Make sure the random cell is not already a mine
-    } else if ((map[rand_row][rand_col] & NUM_MASK) == MINE) {
+    } else if (CELL_IS_MINE(map[rand_row][rand_col])) {
       continue;
     // Set the cell as a mine
     } else {
@@ -158,7 +158,7 @@ void generate_map(struct ms_game *game) {
   for (int i = 0; i < max_rows; i++) {
     for (int j = 0; j < max_cols; j++) {
       // Skip mines
-      if ((map[i][j] & NUM_MASK) == MINE)
+      if (CELL_IS_MINE(map[i][j]))
         continue;
 
       // Get number of adj mines and set it to the cell
