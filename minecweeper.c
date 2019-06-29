@@ -56,11 +56,13 @@ int main() {
       case 'F':
         flag_cell(&game);
     }
-    if (false && game.cells_left == 0) {
-      clear();
-      printw("You won!");
+    if (game.cells_left == 0) {
+      clear(); 
+      printw("You won!\n");
+      gfx_draw_game(&game);
       refresh();
     } else {
+      clear();
       gfx_draw_game(&game);
       refresh();
     }

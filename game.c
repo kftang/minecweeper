@@ -34,11 +34,15 @@ void _discover_around(struct ms_game *game, int row, int col) {
   map[row][col] &= ~HIDDEN;
   map[row][col] |= SHOWN;
 
+  // Only decrement cells left once per cell, also we can skip
+  // recursion if we already visited this cell
   if (!CELL_IS_VISITED(cell)) {
     map[row][col] |= VISITED;
 
     // Decrement cells left
     game->cells_left--;
+  } else {
+    return;
   }
   
   // Check if we need to discover adj cells
