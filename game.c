@@ -90,8 +90,8 @@ void check_cell(struct ms_game *game) {
   int col = game->cursor_col;
   ms_cell_t cell = game->map[row][col];
 
-  // Only do something if the cell is hidden
-  if (cell & HIDDEN) {
+  // Only do something if the cell is hidden and not flagged
+  if ((cell & HIDDEN) && !(cell & FLAG)) {
     // Lose condition
     if ((cell & NUM_MASK) == MINE) {
     // Discover cells 

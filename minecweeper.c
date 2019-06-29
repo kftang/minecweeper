@@ -56,7 +56,7 @@ int main() {
       case 'F':
         flag_cell(&game);
     }
-    if (game->cells_left == 0) {
+    if (game.cells_left == 0) {
 
     } else {
       gfx_draw_game(&game);
