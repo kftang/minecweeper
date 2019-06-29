@@ -9,4 +9,6 @@ Simply run `make` and the executable will be compiled
 - Add way to restart game
 - Add timer
 - Add score tracker
+- Check for memory leaks
+- Check for performance issues
 
