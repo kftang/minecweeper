@@ -29,6 +29,7 @@ struct ms_game {
   uint8_t   rows;
   uint8_t   cols;
   uint8_t   mines;
+  uint8_t   cells_left;
   uint8_t   cursor_row;
   uint8_t   cursor_col;
 };
@@ -36,6 +37,8 @@ struct ms_game {
 void check_cell(struct ms_game *game);
 
 void delete_game(struct ms_game *game);
+
+void flag_cell(struct ms_game *game);
 
 void generate_map(struct ms_game *game);
 

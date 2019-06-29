@@ -11,7 +11,6 @@ void gfx_draw_game(struct ms_game *game) {
   printw("\n");
 
   // Display cells and side border
-  char *cell_str = malloc(sizeof(char) * 4);
   for (int i = 0; i < game->rows; i++) {
     printw("|");
     for (int j = 0; j < game->cols; j++) {
@@ -21,12 +20,12 @@ void gfx_draw_game(struct ms_game *game) {
       // Otherwise show whatever the cell contains
       } else {
         ms_cell_t cell = game->map[i][j];
-        if (cell & HIDDEN) {
-          printw("[ ]");
+        if (cell & FLAG) {
+          printw("[F]");
         } else if (cell & SHOWN) {
           printw("[%d]", cell & NUM_MASK);
-        } else if (cell & FLAG) {
-          printw("[F]");
+        } else if (cell & HIDDEN) {
+          printw("[ ]");
         }
       }
     }
@@ -36,6 +35,5 @@ void gfx_draw_game(struct ms_game *game) {
   // Display bottom border
   for (int i = 0; i < 3 * game->cols + 2; i++)
     printw("-");
-  free(cell_str);
 }
 

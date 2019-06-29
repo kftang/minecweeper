@@ -51,9 +51,17 @@ int main() {
         if (!game.map_generated)
           generate_map(&game);
         check_cell(&game);
+        break;
+      case 'f':
+      case 'F':
+        flag_cell(&game);
     }
-    gfx_draw_game(&game);
-    refresh();
+    if (game->cells_left == 0) {
+
+    } else {
+      gfx_draw_game(&game);
+      refresh();
+    }
   }
 
   deinit_input();

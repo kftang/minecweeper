@@ -33,6 +33,9 @@ void _discover_around(struct ms_game *game, int row, int col) {
   // Set cell to be visible
   map[row][col] &= ~HIDDEN;
   map[row][col] |= SHOWN;
+
+  // Decrement cells left
+  game->cells_left--;
   
   // Check if we need to discover adj cells
   if ((cell & NUM_MASK) == 0 && (cell & HIDDEN)) {
@@ -61,6 +64,9 @@ void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
   game->cols = cols;
   game->mines = mines;
 
+  /* Cells left is used to determine if the game is won */
+  game->cells_left = rows * cols - mines;
+
   /* Allocate map */
   game->map = malloc(sizeof(ms_cell_t *) * rows);
   for (int i = 0; i < rows; i++)
@@ -83,27 +89,38 @@ void check_cell(struct ms_game *game) {
   int row = game->cursor_row;
   int col = game->cursor_col;
   ms_cell_t cell = game->map[row][col];
+
+  // Only do something if the cell is hidden
   if (cell & HIDDEN) {
+    // Lose condition
     if ((cell & NUM_MASK) == MINE) {
-      // Lose condition
+    // Discover cells 
     } else if ((cell & NUM_MASK) == 0) {
       _discover_around(game, row, col);
+    // Show single cell
     } else {
       game->map[row][col] &= ~HIDDEN;
       game->map[row][col] |= SHOWN;
+      game->cells_left--;
     }
   }
 }
 
-void init_game(struct ms_game *game) {
-  game->map = NULL;
-  game->map_generated = false;
-  game->rows = 0;
-  game->cols = 0;
-  game->mines = 0;
-  game->cursor_row = 0;
-  game->cursor_col = 0;
-  srand(time(0));
+void delete_game(struct ms_game *game) {
+  for (int i = 0; i < game->rows; i++)
+    free(game->map[i]);
+  free(game->map);
+}
+
+void flag_cell(struct ms_game *game) {
+  int row = game->cursor_row;
+  int col = game->cursor_col;
+  ms_cell_t cell = game->map[row][col];
+  
+  // Only allow flag if the cell is still hidden
+  if (cell & HIDDEN) {
+    game->map[row][col] |= FLAG;
+  }
 }
 
 void generate_map(struct ms_game *game) {
@@ -148,6 +165,18 @@ void generate_map(struct ms_game *game) {
   game->map_generated = true;
 }
 
+void init_game(struct ms_game *game) {
+  game->map = NULL;
+  game->map_generated = false;
+  game->rows = 0;
+  game->cols = 0;
+  game->mines = 0;
+  game->cells_left = 0;
+  game->cursor_row = 0;
+  game->cursor_col = 0;
+  srand(time(0));
+}
+
 void setup_game(struct ms_game *game, int difficulty) {
   switch (difficulty) {
     default:
@@ -161,11 +190,5 @@ void setup_game(struct ms_game *game, int difficulty) {
       _setup_game(game, 16, 30, 99);
       break;
   }
-}
-
-void delete_game(struct ms_game *game) {
-  for (int i = 0; i < game->rows; i++)
-    free(game->map[i]);
-  free(game->map);
 }
 
