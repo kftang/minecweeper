@@ -4,9 +4,9 @@
 Simply run `make` and the executable will be compiled
 
 ## TODO list
-- Add win screen
+- ~~Add win screen~~
 - Add colors
-- Add way to restart game
+- ~~Add way to restart game~~
 - Add timer
 - Add score tracker
 - Check for memory leaks
