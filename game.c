@@ -74,6 +74,7 @@ void _setup_game(struct ms_game *game, int rows, int cols, int mines) {
 
   /* Cells left is used to determine if the game is won */
   game->cells_left = rows * cols - mines;
+  game->game_finished = false;
 
   /* Allocate map */
   game->map = calloc(rows, sizeof(ms_cell_t *));
@@ -104,6 +105,15 @@ void check_cell(struct ms_game *game) {
   if (CELL_IS_HIDDEN(cell) && !CELL_IS_FLAGGED(cell)) {
     // Lose condition
     if (CELL_IS_MINE(cell)) {
+      game->game_finished = true;
+
+      // Mark all mines as shown to display them on the map
+      for (int i = 0; i < max_rows; i++) {
+        for (int j = 0; j < max_cols; j++) {
+          game->map[i][j] &= ~HIDDEN;
+          game->map[i][j] |= SHOWN;
+        }
+      }
     // Discover cells 
     } else if (CELL_IS_ZERO(cell)) {
       _discover_around(game, row, col);
@@ -114,6 +124,8 @@ void check_cell(struct ms_game *game) {
       game->cells_left--;
     }
   }
+  if (game->cells_left == 0)
+    game->game_finished = true;
 }
 
 void delete_game(struct ms_game *game) {
@@ -178,6 +190,7 @@ void generate_map(struct ms_game *game) {
 void init_game(struct ms_game *game) {
   game->map = NULL;
   game->map_generated = false;
+  game->game_finished = false;
   game->rows = 0;
   game->cols = 0;
   game->mines = 0;

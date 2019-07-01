@@ -114,9 +114,13 @@ int main() {
     }
 
     clear(); 
-    // If game is over, display win message
-    if (game.cells_left == 0)
-      printw("You won!\n");
+    // If game is over, display win/lose message
+    if (game.game_finished) {
+      if (game.cells_left == 0)
+        printw("You won!\n\n");
+      else
+        printw("You lost!\n\n");
+    }
     gfx_draw_game(&game);
     refresh();
   }
