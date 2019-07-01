@@ -1,7 +1,10 @@
 #include <curses.h>
+#include <stdlib.h>
 #include "input.h"
 #include "game.h"
 #include "graphics.h"
+
+#define STR_BUFFER_SIZE 20
 
 int ask_difficulty(int *rows, int *cols, int *mines) {
   /* Start game and ask for difficulty */
@@ -15,7 +18,30 @@ int ask_difficulty(int *rows, int *cols, int *mines) {
   /* Parse selection */
   selection -= '0';
   if (selection == 4) {
-    return -1;
+    clear();
+    echo();
+    nocbreak();
+
+    // Get rows
+    printw("Rows: ");
+    char rows_str[STR_BUFFER_SIZE];
+    getstr(rows_str);
+    *rows = atoi(rows_str);
+    
+    // Get cols
+    printw("Cols: ");
+    char cols_str[STR_BUFFER_SIZE];
+    getstr(cols_str);
+    *cols = atoi(cols_str);
+    
+    // Get mines
+    printw("Mines: ");
+    char mines_str[STR_BUFFER_SIZE];
+    getstr(mines_str);
+    *mines = atoi(mines_str);
+
+    noecho();
+    cbreak();
   }
   return selection;
 }
@@ -74,7 +100,7 @@ int main() {
       case 'd':
       case 'D':
         // Change difficulty
-        selection = ask_difficulty(&rows, &cols);
+        selection = ask_difficulty(&rows, &cols, &mines);
         // Don't break so we restart the game
       case 'r':
       case 'R':

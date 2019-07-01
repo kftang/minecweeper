@@ -8,7 +8,8 @@ void gfx_draw_game(struct ms_game *game) {
   int cells_left = game->cells_left;
   // Only display game info if game is not over
   if (game->cells_left > 0)
-    printw("Game Info\nCells Left: %d\n\nControls\nSpace: Discover Cell\nF: Flag Cell\nR: Restart Game\n", cells_left);
+    printw("Game Info\nCells Left: %d\n\n", cells_left);
+  printw("Controls\nSpace: Discover Cell\nF: Flag Cell\nR: Restart Game\nD: Change Difficulty\n");
   // Display top border
   for (int i = 0; i < 3 * game->cols + 2; i++)
     printw("-");
