@@ -53,6 +53,9 @@ int main() {
   /* Initialize game */
   struct ms_game game;
   init_game(&game);
+
+  /* Initialize graphics */
+  gfx_init();
   
   int rows;
   int cols;
