@@ -3,16 +3,9 @@
 #include "game.h"
 #include "graphics.h"
 
-int main() {
-  /* Initialize curses */
-  init_input();
-
-  /* Initialize game */
-  struct ms_game game;
-  init_game(&game);
-
+int ask_difficulty(int *rows, int *cols, int *mines) {
   /* Start game and ask for difficulty */
-
+  clear();
   int selection;
   printw("Please select a difficulty\n1 Easy\n2 Intermediate\n3 Expect\n4 Custom\n");
   do {
@@ -22,12 +15,28 @@ int main() {
   /* Parse selection */
   selection -= '0';
   if (selection == 4) {
-    deinit_input();
     return -1;
   }
+  return selection;
+}
 
+int main() {
+  /* Initialize curses */
+  init_input();
+
+  /* Initialize game */
+  struct ms_game game;
+  init_game(&game);
+  
+  int rows;
+  int cols;
+  int mines;
+  int selection = ask_difficulty(&rows, &cols, &mines);
+
+  if (selection == -1)
+    return -1;
   /* Setup the game and then draw it on the screen */
-  setup_game(&game, selection);
+  setup_game(&game, selection, rows, cols, mines);
   clear();
   gfx_draw_game(&game);
   refresh();
@@ -36,6 +45,8 @@ int main() {
   while (true) {
     int key = getch();
     switch (key) {
+      // For each direction key, check if cursor is at an edge, if it is don't allow it to
+      // overflow / wrap
       case KEY_UP:
         game.cursor_row = game.cursor_row == 0 ? 0 : game.cursor_row - 1;
         break;
@@ -48,6 +59,7 @@ int main() {
       case KEY_RIGHT:
         game.cursor_col = game.cursor_col == game.cols - 1 ? game.cols - 1 : game.cursor_col + 1;
         break;
+      // Discover a cell
       case ' ':
         // If the map has not been generated, generate it
         if (!game.map_generated)
@@ -58,6 +70,18 @@ int main() {
       case 'F':
         // Flag or unflag cell at current cursor pos
         flag_cell(&game);
+        break;
+      case 'd':
+      case 'D':
+        // Change difficulty
+        selection = ask_difficulty(&rows, &cols);
+        // Don't break so we restart the game
+      case 'r':
+      case 'R':
+        // Restart game
+        setup_game(&game, selection, rows, cols, mines);
+        generate_map(&game);
+        break;
     }
 
     clear(); 

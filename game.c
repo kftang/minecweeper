@@ -187,7 +187,7 @@ void init_game(struct ms_game *game) {
   srand(time(0));
 }
 
-void setup_game(struct ms_game *game, int difficulty) {
+void setup_game(struct ms_game *game, int difficulty, int rows, int cols, int mines) {
   switch (difficulty) {
     default:
     case 1: 
@@ -199,6 +199,8 @@ void setup_game(struct ms_game *game, int difficulty) {
     case 3:
       _setup_game(game, 16, 30, 99);
       break;
+    case 4:
+      _setup_game(game, rows, cols, mines);
   }
 }
 
