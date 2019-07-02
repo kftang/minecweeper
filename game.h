@@ -36,10 +36,10 @@ struct ms_game {
   ms_cell_t **map;
   bool      map_generated;
   bool      game_finished;
-  uint8_t   rows;
-  uint8_t   cols;
-  uint8_t   mines;
-  uint8_t   cells_left;
+  uint16_t  rows;
+  uint16_t  cols;
+  uint16_t  mines;
+  uint16_t  cells_left;
   uint8_t   cursor_row;
   uint8_t   cursor_col;
 };
