@@ -108,6 +108,7 @@ int main() {
       case 'r':
       case 'R':
         // Restart game
+        free_map(&game);
         setup_game(&game, selection, rows, cols, mines);
         generate_map(&game);
         break;
@@ -126,7 +127,7 @@ int main() {
   }
 
   deinit_input();
-  delete_game(&game);
+  free_map(&game);
   return 0;
 }
 

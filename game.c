@@ -128,12 +128,6 @@ void check_cell(struct ms_game *game) {
     game->game_finished = true;
 }
 
-void delete_game(struct ms_game *game) {
-  for (int i = 0; i < game->rows; i++)
-    free(game->map[i]);
-  free(game->map);
-}
-
 void flag_cell(struct ms_game *game) {
   int row = game->cursor_row;
   int col = game->cursor_col;
@@ -143,6 +137,12 @@ void flag_cell(struct ms_game *game) {
   if (CELL_IS_HIDDEN(cell)) {
     game->map[row][col] ^= FLAG;
   }
+}
+
+void free_map(struct ms_game *game) {
+  for (int i = 0; i < game->rows; i++)
+    free(game->map[i]);
+  free(game->map);
 }
 
 void generate_map(struct ms_game *game) {
